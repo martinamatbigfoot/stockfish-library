@@ -423,7 +423,7 @@ ifeq ($(MAKELEVEL),0)
        export ENV_LDFLAGS := $(LDFLAGS)
 endif
 
-CXXFLAGS = $(ENV_CXXFLAGS) -Wall -Wcast-qual -fno-exceptions -std=c++17 $(EXTRACXXFLAGS) -fPIC
+CXXFLAGS = $(ENV_CXXFLAGS) -Wall -Wcast-qual -std=c++17 $(EXTRACXXFLAGS) -fPIC
 DEPENDFLAGS = $(ENV_DEPENDFLAGS) -std=c++17
 LDFLAGS = $(ENV_LDFLAGS) $(EXTRALDFLAGS) -dynamiclib -undefined dynamic_lookup
 

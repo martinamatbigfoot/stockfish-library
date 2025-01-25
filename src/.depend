@@ -58,7 +58,7 @@ search.o: search.cpp search.h history.h misc.h position.h bitboard.h \
   nnue/../memory.h nnue/../position.h nnue/../types.h \
   nnue/nnue_feature_transformer.h nnue/nnue_misc.h numa.h memory.h \
   score.h syzygy/tbprobe.h timeman.h evaluate.h movegen.h movepick.h \
-  thread.h thread_win32_osx.h tt.h uci.h engine.h ucioption.h
+  thread.h thread_win32_osx.h tt.h uci.h engine.h ucioption.h bridge.h
 thread.o: thread.cpp thread.h numa.h memory.h types.h tune.h misc.h \
   position.h bitboard.h nnue/nnue_accumulator.h nnue/nnue_architecture.h \
   nnue/features/half_ka_v2_hm.h nnue/features/../../misc.h \
@@ -108,8 +108,8 @@ uci.o: uci.cpp uci.h engine.h nnue/network.h nnue/../memory.h types.h \
   nnue/nnue_feature_transformer.h nnue/nnue_misc.h numa.h memory.h \
   misc.h position.h search.h history.h score.h syzygy/tbprobe.h \
   timeman.h thread.h thread_win32_osx.h tt.h ucioption.h benchmark.h \
-  movegen.h
-ucioption.o: ucioption.cpp ucioption.h misc.h
+  movegen.h bridge.h
+ucioption.o: ucioption.cpp ucioption.h misc.h bridge.h
 tune.o: tune.cpp tune.h ucioption.h
 tbprobe.o: syzygy/tbprobe.cpp syzygy/tbprobe.h syzygy/../bitboard.h \
   syzygy/../types.h syzygy/../tune.h syzygy/../misc.h \
@@ -130,7 +130,7 @@ tbprobe.o: syzygy/tbprobe.cpp syzygy/tbprobe.h syzygy/../bitboard.h \
   syzygy/../nnue/../types.h syzygy/../nnue/nnue_feature_transformer.h \
   syzygy/../nnue/nnue_misc.h syzygy/../numa.h syzygy/../memory.h \
   syzygy/../score.h syzygy/../syzygy/tbprobe.h syzygy/../timeman.h \
-  syzygy/../ucioption.h
+  syzygy/../ucioption.h syzygy/../bridge.h
 nnue_misc.o: nnue/nnue_misc.cpp nnue/nnue_misc.h nnue/../types.h \
   nnue/../tune.h nnue/nnue_architecture.h nnue/features/half_ka_v2_hm.h \
   nnue/features/../../misc.h nnue/features/../../types.h \
@@ -175,7 +175,7 @@ network.o: nnue/network.cpp nnue/network.h nnue/../memory.h \
   nnue/layers/sqr_clipped_relu.h nnue/nnue_common.h \
   nnue/../nnue/nnue_architecture.h nnue/nnue_accumulator.h \
   nnue/nnue_feature_transformer.h nnue/nnue_misc.h \
-  nnue/../incbin/incbin.h nnue/../evaluate.h
+  nnue/../incbin/incbin.h nnue/../evaluate.h nnue/../bridge.h
 engine.o: engine.cpp engine.h nnue/network.h nnue/../memory.h types.h \
   tune.h nnue/../position.h bitboard.h nnue/nnue_accumulator.h \
   nnue/nnue_architecture.h nnue/features/half_ka_v2_hm.h \
@@ -188,7 +188,7 @@ engine.o: engine.cpp engine.h nnue/network.h nnue/../memory.h types.h \
   nnue/nnue_feature_transformer.h nnue/nnue_misc.h numa.h memory.h \
   misc.h position.h search.h history.h score.h syzygy/tbprobe.h \
   timeman.h thread.h thread_win32_osx.h tt.h ucioption.h evaluate.h \
-  perft.h movegen.h uci.h
+  perft.h movegen.h uci.h bridge.h
 score.o: score.cpp score.h types.h tune.h uci.h engine.h nnue/network.h \
   nnue/../memory.h nnue/../position.h bitboard.h nnue/nnue_accumulator.h \
   nnue/nnue_architecture.h nnue/features/half_ka_v2_hm.h \

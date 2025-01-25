@@ -49,6 +49,7 @@
 #include "tt.h"
 #include "uci.h"
 #include "ucioption.h"
+#include "bridge.h"
 
 namespace Stockfish {
 
@@ -2070,9 +2071,13 @@ void syzygy_extend_pv(const OptionsMap&         options,
 
     // Inform if we couldn't get a full extension in time
     if (time_abort())
-        sync_cout
-          << "info string Syzygy based PV extension requires more time, increase Move Overhead as needed."
-          << sync_endl;
+    {
+        //sync_cout
+            //<< "info string Syzygy based PV extension requires more time, increase Move Overhead as needed."
+            //<< sync_endl;
+        TriggerEvent("info string Syzygy based PV extension requires more time, increase Move Overhead as needed.");
+    }
+       
 }
 
 void SearchManager::pv(Search::Worker&           worker,

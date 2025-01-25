@@ -2,6 +2,7 @@
 #include <functional>
 #include <string>
 #include <mutex>
+#include <queue>
 #include "bitboard.h"
 #include "misc.h"
 #include "position.h"
@@ -13,38 +14,68 @@
 
 using namespace Stockfish;
 
+// Declare a pointer for UCIEngine 
 
+// Store the callback function pointer
+std::queue<std::string>* eventQueue;
+std::atomic<UnityCallback> unity_callback_atomic = nullptr;
+
+UCIEngine* uci = nullptr;
+bool initialized = false;
 extern "C" {
+    void Initialize(UnityCallback callback) { 
+        if (!initialized) {
+            // Initialize Stockfish components
+            Bitboards::init();
+            Position::init();
+            eventQueue = new std::queue<std::string>();
+            
+            // Initialize UCIEngine
+            uci = new UCIEngine(0, nullptr);
+            
+            Tune::init(uci->engine_options());
 
-    UCIEngine uci(0, nullptr);
+            // Register the Unity callback
+            RegisterCallback(callback);
 
-    void Initialize(UnityCallback callback){
-        Bitboards::init();
-        Position::init();
+            TriggerEvent("initialized");
 
-        Tune::init(uci.engine_options());
-        RegisterCallback(callback);
+            initialized = true;
+        }
     }
 
     void ExecuteCommand(const char* cmd) {
-        static std::string result;
-        uci.ExecuteCommand(std::string(cmd));
+        if (!uci) {
+            return;
+        }
+        uci->ExecuteCommand(std::string(cmd));
+    }
+
+    void Shutdown() {
+        if (uci) {
+            delete uci;
+            uci = nullptr;
+        }
+    }
+
+    std::string ProcessEventsFromNative() {
+        if (!eventQueue->empty()) {
+            std::string msg = eventQueue->front();
+            eventQueue->pop();
+            return msg;
+        }
+        return "not useful";
     }
 }
 
-
-// Store the callback function pointer
-static UnityCallback unity_callback = nullptr;
-static std::mutex callback_mutex;
-
 void RegisterCallback(UnityCallback callback) {
-    std::lock_guard<std::mutex> lock(callback_mutex);
-    unity_callback = callback;
-} 
+    unity_callback_atomic.store(callback, std::memory_order_relaxed);
+}
 
-void TriggerEvent(const std::string& message) {
-    std::lock_guard<std::mutex> lock(callback_mutex);
-    if (unity_callback) {
-        unity_callback(message.c_str()); // Call the Unity callback
+void TriggerEvent(const std::string message) {
+    eventQueue->push(message);
+    UnityCallback callback = unity_callback_atomic.load(std::memory_order_relaxed);
+    if (callback) {
+        callback(message.c_str()); // Directly invoke the Unity callback
     }
 }

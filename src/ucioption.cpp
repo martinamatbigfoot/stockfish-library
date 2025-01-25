@@ -26,6 +26,7 @@
 #include <utility>
 
 #include "misc.h"
+#include "bridge.h"
 
 namespace Stockfish {
 
@@ -54,7 +55,13 @@ void OptionsMap::setoption(std::istringstream& is) {
     if (options_map.count(name))
         options_map[name] = value;
     else
-        sync_cout << "No such option: " << name << sync_endl;
+    {
+        //sync_cout << "No such option: " << name << sync_endl;
+        std::stringstream ss;
+        ss << "No such option: " << name;
+        TriggerEvent(ss.str());
+    }
+        
 }
 
 Option OptionsMap::operator[](const std::string& name) const {

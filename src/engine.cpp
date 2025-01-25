@@ -39,6 +39,7 @@
 #include "types.h"
 #include "uci.h"
 #include "ucioption.h"
+#include "bridge.h"
 
 namespace Stockfish {
 

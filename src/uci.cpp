@@ -28,9 +28,6 @@
 #include <string_view>
 #include <utility>
 #include <vector>
-#include <functional>
-#include <string>
-#include <mutex>
 
 #include "benchmark.h"
 #include "engine.h"
@@ -41,6 +38,7 @@
 #include "search.h"
 #include "types.h"
 #include "ucioption.h"
+#include "bridge.h"
 
 namespace Stockfish {
 
@@ -56,15 +54,18 @@ template<typename... Ts>
 overload(Ts...) -> overload<Ts...>;
 
 void UCIEngine::print_info_string(std::string_view str) {
-    sync_cout_start();
+    //sync_cout_start();
     for (auto& line : split(str, "\n"))
     {
         if (!is_whitespace(line))
         {
-            std::cout << "info string " << line << '\n';
+            //std::cout << "info string " << line << '\n';
+            std::stringstream ss;
+            ss << "info string " << line;
+            TriggerEvent(ss.str());    
         }
     }
-    sync_cout_end();
+    //sync_cout_end();
 }
 
 UCIEngine::UCIEngine(int argc, char** argv) :
@@ -194,10 +195,13 @@ void UCIEngine::ExecuteCommand(const std::string& cmd) {
         engine.set_ponderhit(false);
     }
     else if (token == "uci") {
-        sync_cout << "id name " << engine_info(true) << "\n"
-                  << engine.get_options() << sync_endl;
-
-        sync_cout << "uciok" << sync_endl;
+        std::stringstream ss;
+        ss << "id name " << engine_info(true) << "\n" << engine.get_options();
+        TriggerEvent(ss.str());    
+        //sync_cout << "id name " << engine_info(true) << "\n"
+        //          << engine.get_options() << sync_endl;
+        TriggerEvent("uciok");   
+        //sync_cout << "uciok" << sync_endl;
     }
     else if (token == "setoption") {
         setoption(is);
@@ -214,7 +218,8 @@ void UCIEngine::ExecuteCommand(const std::string& cmd) {
         engine.search_clear();
     }
     else if (token == "isready") {
-        sync_cout << "readyok" << sync_endl;
+        TriggerEvent("readyok");   
+        //sync_cout << "readyok" << sync_endl;
     }
     else if (token == "flip") {
         engine.flip();
@@ -226,13 +231,15 @@ void UCIEngine::ExecuteCommand(const std::string& cmd) {
         benchmark(is);
     }
     else if (token == "d") {
-        sync_cout << engine.visualize() << sync_endl;
+        TriggerEvent(engine.visualize());   
+        //sync_cout << engine.visualize() << sync_endl;
     }
     else if (token == "eval") {
         engine.trace_eval();
     }
     else if (token == "compiler") {
-        sync_cout << compiler_info() << sync_endl;
+        TriggerEvent(compiler_info()); 
+        //sync_cout << compiler_info() << sync_endl;
     }
     else if (token == "export_net") {
         std::pair<std::optional<std::string>, std::string> files[2];
@@ -246,8 +253,11 @@ void UCIEngine::ExecuteCommand(const std::string& cmd) {
         engine.save_network(files);
     }
     else if (!token.empty() && token[0] != '#') {
-        sync_cout << "Unknown command: '" << cmd << "'. Type help for more information."
-                  << sync_endl;
+        std::stringstream ss;
+        ss << "Unknown command: '" << cmd << "'. Type help for more information.";
+        TriggerEvent(ss.str()); 
+        //sync_cout << "Unknown command: '" << cmd << "'. Type help for more information."
+        //          << sync_endl;
     }
 }
 
@@ -540,7 +550,10 @@ void UCIEngine::setoption(std::istringstream& is) {
 
 std::uint64_t UCIEngine::perft(const Search::LimitsType& limits) {
     auto nodes = engine.perft(engine.fen(), limits.perft, engine.get_options()["UCI_Chess960"]);
-    sync_cout << "\nNodes searched: " << nodes << "\n" << sync_endl;
+    //sync_cout << "\nNodes searched: " << nodes << "\n" << sync_endl;
+    std::stringstream ss;
+    ss  << "\nNodes searched: " << nodes << "\n";
+    TriggerEvent(ss.str()); 
     return nodes;
 }
 
@@ -691,7 +704,10 @@ Move UCIEngine::to_move(const Position& pos, std::string str) {
 }
 
 void UCIEngine::on_update_no_moves(const Engine::InfoShort& info) {
-    sync_cout << "info depth " << info.depth << " score " << format_score(info.score) << sync_endl;
+    std::stringstream ss;
+    ss  << "info depth " << info.depth << " score " << format_score(info.score);
+    TriggerEvent(ss.str()); 
+    //sync_cout << "info depth " << info.depth << " score " << format_score(info.score) << sync_endl;
 }
 
 void UCIEngine::on_update_full(const Engine::InfoFull& info, bool showWDL) {
@@ -716,7 +732,8 @@ void UCIEngine::on_update_full(const Engine::InfoFull& info, bool showWDL) {
        << " time " << info.timeMs        //
        << " pv " << info.pv;             //
 
-    sync_cout << ss.str() << sync_endl;
+    TriggerEvent(ss.str()); 
+    //sync_cout << ss.str() << sync_endl;
 }
 
 void UCIEngine::on_iter(const Engine::InfoIter& info) {
@@ -727,14 +744,24 @@ void UCIEngine::on_iter(const Engine::InfoIter& info) {
        << " currmove " << info.currmove               //
        << " currmovenumber " << info.currmovenumber;  //
 
-    sync_cout << ss.str() << sync_endl;
+    //sync_cout << ss.str() << sync_endl;
+    TriggerEvent(ss.str()); 
 }
 
 void UCIEngine::on_bestmove(std::string_view bestmove, std::string_view ponder) {
-    sync_cout << "bestmove " << bestmove;
+    std::stringstream ss;
+    ss << "bestmove " << bestmove;
+    
+
+    //sync_cout << "bestmove " << bestmove;
     if (!ponder.empty())
-        std::cout << " ponder " << ponder;
-    std::cout << sync_endl;
+    {
+        ss << " ponder " << ponder;
+        //std::cout << " ponder " << ponder;
+    }
+    TriggerEvent(ss.str()); 
+    //std::cout << sync_endl;
+
 }
 
 }  // namespace Stockfish

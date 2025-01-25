@@ -37,6 +37,7 @@
 #include "nnue_architecture.h"
 #include "nnue_common.h"
 #include "nnue_misc.h"
+#include "../bridge.h"
 
 // Macro to embed the default efficiently updatable neural network (NNUE) file
 // data in the engine binary (using incbin.h, by Dale Weiler).
@@ -190,7 +191,8 @@ bool Network<Arch, Transformer>::save(const std::optional<std::string>& filename
             msg = "Failed to export a net. "
                   "A non-embedded net can only be saved if the filename is specified";
 
-            sync_cout << msg << sync_endl;
+            //sync_cout << msg << sync_endl;
+            TriggerEvent(msg);
             return false;
         }
 
@@ -202,7 +204,8 @@ bool Network<Arch, Transformer>::save(const std::optional<std::string>& filename
 
     msg = saved ? "Network saved successfully to " + actualFilename : "Failed to export a net";
 
-    sync_cout << msg << sync_endl;
+    //sync_cout << msg << sync_endl;
+    TriggerEvent(msg);
     return saved;
 }
 

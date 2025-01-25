@@ -43,6 +43,7 @@
 #include "../search.h"
 #include "../types.h"
 #include "../ucioption.h"
+#include "../bridge.h"
 
 #ifndef _WIN32
     #include <fcntl.h>
@@ -493,8 +494,11 @@ class TBTables {
     }
 
     void info() const {
-        sync_cout << "info string Found " << foundWDLFiles << " WDL and " << foundDTZFiles
-                  << " DTZ tablebase files (up to " << MaxCardinality << "-man)." << sync_endl;
+        //sync_cout << "info string Found " << foundWDLFiles << " WDL and " << foundDTZFiles
+        //          << " DTZ tablebase files (up to " << MaxCardinality << "-man)." << sync_endl;
+        std::stringstream ss;
+        ss << "info string Found " << foundWDLFiles << " WDL and " << foundDTZFiles << " DTZ tablebase files (up to " << MaxCardinality << "-man).";
+        TriggerEvent(ss.str());
     }
 
     void add(const std::vector<PieceType>& pieces);
