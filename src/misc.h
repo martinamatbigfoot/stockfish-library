@@ -116,10 +116,9 @@ std::ostream& operator<<(std::ostream&, SyncCout);
 #define sync_cout std::cout << IO_LOCK
 #define sync_endl std::endl << IO_UNLOCK
 
+
 void sync_cout_start();
 void sync_cout_end();
-void RegisterCallback(UnityCallback callback);
-void TriggerEvent(const std::string& message);
 
 // True if and only if the binary is compiled on a little-endian machine
 static inline const union {

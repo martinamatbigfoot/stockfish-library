@@ -214,4 +214,4 @@ bridge.o: bridge.cpp bitboard.h types.h tune.h misc.h position.h \
   nnue/network.h nnue/../memory.h nnue/../position.h nnue/../types.h \
   nnue/nnue_feature_transformer.h nnue/nnue_misc.h numa.h memory.h \
   search.h history.h score.h syzygy/tbprobe.h timeman.h thread.h \
-  thread_win32_osx.h tt.h ucioption.h
+  thread_win32_osx.h tt.h ucioption.h bridge.h

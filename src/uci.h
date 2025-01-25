@@ -39,7 +39,6 @@ using Value = int;
 class UCIEngine {
    public:
     UCIEngine(int argc, char** argv);
-    void RegisterCallback(UnityCallback callback);
     void loop();
     void ExecuteCommand(const std::string& cmd);
     void 

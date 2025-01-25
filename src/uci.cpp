@@ -79,25 +79,6 @@ UCIEngine::UCIEngine(int argc, char** argv) :
     init_search_update_listeners();
 }
 
-// Define a type for the callback
-using UnityCallback = void (*)(const char* message);
-
-// Store the callback function pointer
-static UnityCallback unity_callback = nullptr;
-static std::mutex callback_mutex;
-
-void RegisterCallback(UnityCallback callback) {
-    std::lock_guard<std::mutex> lock(callback_mutex);
-    unity_callback = callback;
-} 
-
-void TriggerEvent(const std::string& message) {
-    std::lock_guard<std::mutex> lock(callback_mutex);
-    if (unity_callback) {
-        unity_callback(message.c_str()); // Call the Unity callback
-    }
-}
-
 void UCIEngine::init_search_update_listeners() {
     engine.set_on_iter([](const auto& i) { on_iter(i); });
     engine.set_on_update_no_moves([](const auto& i) { on_update_no_moves(i); });

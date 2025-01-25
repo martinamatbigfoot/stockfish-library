@@ -412,25 +412,6 @@ std::ostream& operator<<(std::ostream& os, SyncCout sc) {
 void sync_cout_start() { std::cout << IO_LOCK; }
 void sync_cout_end() { std::cout << IO_UNLOCK; }
 
-// Define a type for the callback
-using UnityCallback = void (*)(const char* message);
-
-// Store the callback function pointer
-static UnityCallback unity_callback = nullptr;
-static std::mutex callback_mutex;
-
-void RegisterCallback(UnityCallback callback) {
-    std::lock_guard<std::mutex> lock(callback_mutex);
-    unity_callback = callback;
-} 
-
-void TriggerEvent(const std::string& message) {
-    std::lock_guard<std::mutex> lock(callback_mutex);
-    if (unity_callback) {
-        unity_callback(message.c_str()); // Call the Unity callback
-    }
-}
-
 // Trampoline helper to avoid moving Logger to misc.h
 void start_logger(const std::string& fname) { Logger::start(fname); }
 
