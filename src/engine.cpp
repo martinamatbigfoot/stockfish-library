@@ -265,8 +265,10 @@ void Engine::trace_eval() const {
     p.set(pos.fen(), options["UCI_Chess960"], &trace_states->back());
 
     verify_networks();
-
-    sync_cout << "\n" << Eval::trace(p, *networks) << sync_endl;
+    std::stringstream ss;
+    ss << "\n" << Eval::trace(p, *networks);
+    TriggerEvent(ss.str());
+    //sync_cout << "\n" << Eval::trace(p, *networks) << sync_endl;
 }
 
 const OptionsMap& Engine::get_options() const { return options; }
