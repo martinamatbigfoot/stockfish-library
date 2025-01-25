@@ -26,7 +26,7 @@ extern "C" {
         RegisterCallback(callback);
     }
 
-    const char* ExecuteCommand(const char* cmd) {
+    void ExecuteCommand(const char* cmd) {
         static std::string result;
         uci.ExecuteCommand(std::string(cmd));
     }
