@@ -39,9 +39,10 @@ using Value = int;
 class UCIEngine {
    public:
     UCIEngine(int argc, char** argv);
-
+    void RegisterCallback(UnityCallback callback);
     void loop();
-
+    void ExecuteCommand(const std::string& cmd);
+    void 
     static int         to_cp(Value v, const Position& pos);
     static std::string format_score(const Score& s);
     static std::string square(Square s);
