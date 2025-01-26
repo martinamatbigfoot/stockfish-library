@@ -17,7 +17,7 @@ extern "C" {
     // Shuts down Stockfish and cleans up resources
     void Shutdown();
 
-    std::string ProcessEventsFromNative();
+    char* ProcessEventsFromNative();
 }
 
 // Functions for handling Unity callbacks (internal use within the library)

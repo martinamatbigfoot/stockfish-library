@@ -58,13 +58,8 @@ extern "C" {
         }
     }
 
-    std::string ProcessEventsFromNative() {
-        if (!eventQueue->empty()) {
-            std::string msg = eventQueue->front();
-            eventQueue->pop();
-            return msg;
-        }
-        return "not useful";
+    char* ProcessEventsFromNative() {
+        return "Hello from native!";
     }
 }
 
